@@ -1,7 +1,6 @@
 package com.xc.usercentor.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xc.usercentor.common.BaseResponse;
 import com.xc.usercentor.common.ErrorCode;
@@ -24,14 +23,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.xc.usercentor.constant.UserConstant.ADMIN_ROLE;
 import static com.xc.usercentor.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户接口
  * 响应类型：application/json
  *
- * @author zxl
+ * @author xc
  */
 @RestController
 @RequestMapping("user")
