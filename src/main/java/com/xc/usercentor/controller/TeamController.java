@@ -9,9 +9,8 @@ import com.xc.usercentor.excption.BusinessException;
 import com.xc.usercentor.model.domains.Team;
 import com.xc.usercentor.model.domains.User;
 import com.xc.usercentor.model.dto.TeamQuery;
-import com.xc.usercentor.model.request.TeamAddRequest;
-import com.xc.usercentor.model.request.UserLoginRequest;
-import com.xc.usercentor.model.request.UserRegisterRequest;
+import com.xc.usercentor.model.request.*;
+import com.xc.usercentor.model.vo.TeamUserVO;
 import com.xc.usercentor.service.TeamService;
 import com.xc.usercentor.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ import static com.xc.usercentor.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("team")
-@CrossOrigin(origins = {"http://localhost:5173"},allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
 @Slf4j
 public class TeamController {
 
@@ -56,8 +55,8 @@ public class TeamController {
         }
         User loginUser = userService.getLoginUser(request);
         Team team = new Team();
-        BeanUtils.copyProperties(teamAddRequest,team);
-        long teamId= teamService.addTeam(team,loginUser);
+        BeanUtils.copyProperties(teamAddRequest, team);
+        long teamId = teamService.addTeam(team, loginUser);
         return ResultUtils.success(teamId);
     }
 
@@ -68,19 +67,20 @@ public class TeamController {
         }
         boolean result = teamService.removeById(id);
         if (!result) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"删除失败");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "删除失败");
         }
         return ResultUtils.success(true);
     }
 
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateTeam(@RequestBody Team team) {
-        if (team == null) {
+    public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request) {
+        if (teamUpdateRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean result = teamService.updateById(team);
+        User loginUser = userService.getLoginUser(request);
+        boolean result = teamService.updateTeam(teamUpdateRequest, loginUser);
         if (!result) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"更新失败");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "更新失败");
         }
         return ResultUtils.success(true);
     }
@@ -97,15 +97,14 @@ public class TeamController {
         return ResultUtils.success(team);
     }
 
+
     @GetMapping("list")
-    public BaseResponse<List<Team>> listTeams(TeamQuery teamQuery) {
+    public BaseResponse<List<TeamUserVO>> listTeams(TeamQuery teamQuery, HttpServletRequest request) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Team team = new Team();
-        BeanUtils.copyProperties(teamQuery,team);
-        QueryWrapper<Team> queryWrapper = new QueryWrapper<>(team);
-        List<Team> teamList = teamService.list(queryWrapper);
+        boolean isAdmin = userService.isAdmin(request);
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, isAdmin);
         return ResultUtils.success(teamList);
     }
 
@@ -115,10 +114,20 @@ public class TeamController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Team team = new Team();
-        BeanUtils.copyProperties(teamQuery,team);
+        BeanUtils.copyProperties(teamQuery, team);
         Page<Team> page = new Page<>(teamQuery.getPageNum(), teamQuery.getPageSize());
         QueryWrapper<Team> queryWrapper = new QueryWrapper<>(team);
         Page<Team> resultPage = teamService.page(page);
         return ResultUtils.success(resultPage);
+    }
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest,HttpServletRequest request) {
+        if (teamJoinRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        boolean result = teamService.joinTeam(teamJoinRequest,loginUser);
+        return ResultUtils.success(result);
     }
 }

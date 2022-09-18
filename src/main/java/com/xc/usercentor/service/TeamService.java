@@ -3,6 +3,12 @@ package com.xc.usercentor.service;
 import com.xc.usercentor.model.domains.Team;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xc.usercentor.model.domains.User;
+import com.xc.usercentor.model.dto.TeamQuery;
+import com.xc.usercentor.model.request.TeamJoinRequest;
+import com.xc.usercentor.model.request.TeamUpdateRequest;
+import com.xc.usercentor.model.vo.TeamUserVO;
+
+import java.util.List;
 
 /**
 * @author 25078
@@ -17,4 +23,25 @@ public interface TeamService extends IService<Team> {
      * @return
      */
     long addTeam(Team team, User loginUser);
+
+    /**
+     * 搜索队伍
+     * @param teamQuery
+     * @return
+     */
+    List<TeamUserVO> listTeams(TeamQuery teamQuery,boolean isAdmin);
+
+    /**
+     * 更新队伍
+     * @param teamUpdateRequest
+     * @return
+     */
+    boolean updateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser);
+
+    /**
+     * 加入队伍
+     * @param teamJoinRequest
+     * @return
+     */
+    boolean joinTeam(TeamJoinRequest teamJoinRequest, User loginUser);
 }
