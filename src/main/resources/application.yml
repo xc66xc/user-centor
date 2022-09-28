@@ -4,7 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/xc?serverTimezone=Asia/Shanghai
     #    url: 'jdbc:mysql://sh-cynosdbmysql-grp-98pxrcoq.sql.tencentcdb.com:29164/user_center?useSSL=false'
     username: root
-    password: *****
+    password: xcxc666 # *****
   application:
     name: user-centor
     #redis配置
@@ -38,7 +38,7 @@ server:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)

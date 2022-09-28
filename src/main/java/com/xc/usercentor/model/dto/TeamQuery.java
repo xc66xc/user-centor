@@ -4,6 +4,8 @@ package com.xc.usercentor.model.dto;
 import com.xc.usercentor.model.request.PageRequest;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 public class TeamQuery extends PageRequest {
@@ -12,6 +14,10 @@ public class TeamQuery extends PageRequest {
      */
     private Long id;
 
+    /**
+     * id 列表
+     */
+    private List<Long> idList;
     /**
      * 搜索词
      */

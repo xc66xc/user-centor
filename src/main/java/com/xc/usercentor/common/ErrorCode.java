@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     NO_AUTH(40100, "无权限", ""),
     NO_LOGIN(40200, "未登录", ""),
+    FORBIDDEN(40301, "禁止访问", ""),
     PARAMS_ERROR(40000, "请求参数错误", ""),
     PARAMS_NULL_ERROR(40001, "请求参数为空", ""),
     NULL_ERROR(40003, "参数为空", ""),

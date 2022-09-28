@@ -9,6 +9,7 @@ import com.xc.usercentor.excption.BusinessException;
 import com.xc.usercentor.model.domains.User;
 import com.xc.usercentor.model.request.UserLoginRequest;
 import com.xc.usercentor.model.request.UserRegisterRequest;
+import com.xc.usercentor.model.vo.UserVO;
 import com.xc.usercentor.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,7 @@ import static com.xc.usercentor.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("user")
-@CrossOrigin(origins = {"http://localhost:5173"},allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173"}, allowCredentials = "true")
 @Slf4j
 public class UserController {
 
@@ -125,19 +126,19 @@ public class UserController {
         User loginUser = userService.getLoginUser(servletRequest);
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         //如果有缓存，直接查缓存
-        String redisKey = String.format("xc:user:recommed:%s",loginUser.getId());
+        String redisKey = String.format("xc:user:recommed:%s", loginUser.getId());
         Page<User> userPage = (Page<User>) valueOperations.get(redisKey);
         if (userPage != null) {
             return ResultUtils.success(userPage);
         }
         //无缓存，查数据库
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        userPage = userService.page(new Page<>(pageNum,pageSize),wrapper);
+        userPage = userService.page(new Page<>(pageNum, pageSize), wrapper);
         //写缓存
         try {
-            valueOperations.set(redisKey,userPage,1, TimeUnit.DAYS);
+            valueOperations.set(redisKey, userPage, 1, TimeUnit.DAYS);
         } catch (Exception e) {
-            log.error("redis set key error",e);
+            log.error("redis set key error", e);
         }
         return ResultUtils.success(userPage);
 
@@ -167,7 +168,7 @@ public class UserController {
         User loginUser = userService.getLoginUser(request);
 
         //3.触发更新
-        int result = userService.updateUser(user,loginUser);
+        int result = userService.updateUser(user, loginUser);
         return ResultUtils.success(result);
     }
 
@@ -181,5 +182,12 @@ public class UserController {
         return ResultUtils.success(userList);
     }
 
-
+    @GetMapping("/match")
+    public BaseResponse<List<User>> matchUsers(long num, HttpServletRequest request) {
+        if (num <= 0 || num > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.getLoginUser(request);
+        return ResultUtils.success(userService.matchUsers(num, user));
+    }
 }

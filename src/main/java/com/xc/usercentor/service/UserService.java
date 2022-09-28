@@ -1,7 +1,9 @@
 package com.xc.usercentor.service;
 
+import com.xc.usercentor.common.BaseResponse;
 import com.xc.usercentor.model.domains.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xc.usercentor.model.vo.UserVO;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,4 +85,12 @@ public interface UserService extends IService<User> {
     boolean isAdmin(HttpServletRequest servletRequest);
 
     boolean isAdmin(User loginUser);
+
+    /**
+     * 匹配用户
+     * @param num
+     * @param loginUser
+     * @return
+     */
+    List<User> matchUsers(long num, User loginUser);
 }
